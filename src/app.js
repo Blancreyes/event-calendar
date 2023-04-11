@@ -18,6 +18,11 @@ const weekdays = [
 
 function load() {
     const date = new Date();
+
+    if (nav !== 0) {
+        date.setMonth(new Date().getMonth() + nav);
+    }
+
     const day = date.getDate();
     const month = date.getMonth();
     const year = date.getFullYear();
@@ -34,6 +39,14 @@ function load() {
 
     const paddingDays = weekdays.indexOf(dateString.split(", ")[0]);
 
+    document.getElementById(
+        "monthdisplay"
+    ).innerText = `${date.toLocaleDateString("en-us", {
+    month: "long",
+  })} ${year}`;
+
+    calendar.innerHTML = "";
+
     for (let i = 1; i <= paddingDays + daysInMonth; i++) {
         const daySquare = document.createElement("div");
         daySquare.classList.add("day");
@@ -47,8 +60,18 @@ function load() {
 
         calendar.appendChild(daySquare);
     }
-
-    console.log(paddingDays);
 }
 
+function initButtons() {
+    document.getElementById("nextButton").addEventListener("click", () => {
+        nav++;
+        load();
+    });
+    document.getElementById("backButton").addEventListener("click", () => {
+        nav--;
+        load();
+    });
+}
+
+initButtons();
 load();
