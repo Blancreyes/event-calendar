@@ -11,21 +11,27 @@ const weekdays = [
     "Monday",
     "Tuesday",
     "Wednesday",
-    " Thursday",
+    "Thursday",
     "Friday",
     "Saturday",
 ];
 
+function openModal(date) {
+    clicked = date;
+
+    const eventForDay = events.find((e) => e.date === clicked);
+}
+
 function load() {
-    const date = new Date();
+    const dt = new Date();
 
     if (nav !== 0) {
-        date.setMonth(new Date().getMonth() + nav);
+        dt.setMonth(new Date().getMonth() + nav);
     }
 
-    const day = date.getDate();
-    const month = date.getMonth();
-    const year = date.getFullYear();
+    const day = dt.getDate();
+    const month = dt.getMonth();
+    const year = dt.getFullYear();
 
     const firstDayInMonth = new Date(year, month, 1);
     const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -39,11 +45,12 @@ function load() {
 
     const paddingDays = weekdays.indexOf(dateString.split(", ")[0]);
 
-    document.getElementById(
-        "monthdisplay"
-    ).innerText = `${date.toLocaleDateString("en-us", {
-    month: "long",
-  })} ${year}`;
+    document.getElementById("monthdisplay").innerText = `${dt.toLocaleDateString(
+    "en-us",
+    {
+      month: "long",
+    }
+  )} ${year}`;
 
     calendar.innerHTML = "";
 
