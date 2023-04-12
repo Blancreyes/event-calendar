@@ -1,11 +1,14 @@
 let nav = 0;
 let clicked = null;
 let events = localStorage.getItem("events") ?
-    JSON.parse(localStorage.getItem(events)) :
+    JSON.parse(localStorage.getItem("events")) :
     [];
 
 const calendar = document.getElementById("calendar");
 
+const newEventModal = document.getElementById("newEventModal");
+const backDrop = document.getElementById("modalBackDrop");
+const eventTitle = document.getElementById("eventTitleInput");
 const weekdays = [
     "Sunday",
     "Monday",
@@ -18,8 +21,15 @@ const weekdays = [
 
 function openModal(date) {
     clicked = date;
-
     const eventForDay = events.find((e) => e.date === clicked);
+
+    if (eventForDay) {
+        console.log("Event already exists");
+    } else {
+        newEventModal.style.display = "block";
+    }
+
+    backDrop.style.display = "block";
 }
 
 function load() {
@@ -58,14 +68,50 @@ function load() {
         const daySquare = document.createElement("div");
         daySquare.classList.add("day");
 
+        const dayString = `${month + 1}/${i - paddingDays}/${year}`;
+
         if (i > paddingDays) {
             daySquare.innerText = i - paddingDays;
-            daySquare.addEventListener("click", () => console.log("click"));
+
+            const eventForDay = events.find((e) => e.date === dayString);
+
+            if (eventForDay) {
+                const eventDiv = document.createElement("div");
+                eventDiv.classList.add("event");
+
+                daySquare.appendChild(eventDiv);
+            }
+
+            daySquare.addEventListener("click", () => openModal(dayString));
         } else {
             daySquare.classList.add("padding");
         }
 
         calendar.appendChild(daySquare);
+    }
+}
+
+function closeModal() {
+    eventTitle.classList.remove("error");
+    newEventModal.style.display = "none";
+    backDrop.style.display = "none";
+    eventTitle.value = "";
+    clicked = "null";
+    load();
+}
+
+function saveEvent() {
+    if (eventTitle.value) {
+        eventTitle.classList.remove("error");
+        events.push({
+            date: clicked,
+            title: eventTitle.value,
+        });
+
+        localStorage.setItem("events", JSON.stringify(events));
+        closeModal();
+    } else {
+        eventTitle.classList.add();
     }
 }
 
@@ -78,6 +124,9 @@ function initButtons() {
         nav--;
         load();
     });
+
+    document.getElementById("saveButton").addEventListener("click", saveEvent);
+    document.getElementById("cancelButton").addEventListener("click", closeModal);
 }
 
 initButtons();
